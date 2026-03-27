@@ -15,7 +15,7 @@ export default function TodoNavbar({
     onWordsChange,
 }: TodoNavbarProps): JSX.Element {
     return (
-        <nav className="border-b border-zinc-700 bg-zinc-950/80 px-4 py-3 backdrop-blur sm:px-6">
+        <nav className="sticky top-0 z-40 border-b border-zinc-700 bg-zinc-950/80 px-4 py-3 backdrop-blur sm:px-6">
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-center gap-6">
                     <h1 className="text-xl font-bold tracking-tight">JS Todo List</h1>
