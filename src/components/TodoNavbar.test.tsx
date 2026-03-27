@@ -10,6 +10,7 @@ describe('TodoNavbar', () => {
                 words=""
                 onFilterTypeChange={() => { }}
                 onWordsChange={() => { }}
+                onSearch={() => { }}
             />,
         );
 
