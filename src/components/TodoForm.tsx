@@ -6,6 +6,7 @@ type TodoFormProps = {
     onTitleChange: (value: string) => void;
     onDescriptionChange: (value: string) => void;
     onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+    submitLabel?: string;
 };
 
 export default function TodoForm({
@@ -14,6 +15,7 @@ export default function TodoForm({
     onTitleChange,
     onDescriptionChange,
     onSubmit,
+    submitLabel = 'Add',
 }: TodoFormProps): JSX.Element {
     return (
         <form onSubmit={onSubmit}>
@@ -47,7 +49,7 @@ export default function TodoForm({
                         type="submit"
                         className="h-10 w-full rounded-md bg-cyan-600 px-4 font-semibold text-white transition hover:bg-cyan-500"
                     >
-                        Add
+                        {submitLabel}
                     </button>
                 </div>
             </div>

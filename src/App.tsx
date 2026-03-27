@@ -1,29 +1,19 @@
 import { useEffect, useMemo, useState, type FormEvent, type JSX } from 'react';
 import AlertBanner from './components/AlertBanner';
-import EditTodoModal from './components/EditTodoModal';
 import TodoForm from './components/TodoForm';
 import TodoNavbar from './components/TodoNavbar';
 import TodoTable from './components/TodoTable';
-import { type FilterType, type ModalState, type Task } from './types';
-
-const initialModal: ModalState = {
-  isOpen: false,
-  id: '',
-  title: '',
-  description: '',
-  completed: false,
-};
+import { type FilterType, type Task } from './types';
 
 export default function App(): JSX.Element {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [words, setWords] = useState('');
   const [mainAlert, setMainAlert] = useState('');
-  const [modalAlert, setModalAlert] = useState('');
-  const [modal, setModal] = useState<ModalState>(initialModal);
 
   useEffect(() => {
     const savedTasks = localStorage.getItem('todo_tasks');
@@ -74,7 +64,7 @@ export default function App(): JSX.Element {
     });
   }, [tasks, words, filterType]);
 
-  const handleAdd = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
     if (!title.trim() || !description.trim()) {
@@ -83,15 +73,32 @@ export default function App(): JSX.Element {
     }
 
     setMainAlert('');
-    setTasks((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        title: title.trim(),
-        description: description.trim(),
-        completed: false,
-      },
-    ]);
+
+    if (editingId) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === editingId
+            ? {
+              ...task,
+              title: title.trim(),
+              description: description.trim(),
+            }
+            : task,
+        ),
+      );
+      setEditingId(null);
+    } else {
+      setTasks((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          title: title.trim(),
+          description: description.trim(),
+          completed: false,
+        },
+      ]);
+    }
+
     setTitle('');
     setDescription('');
   };
@@ -106,42 +113,11 @@ export default function App(): JSX.Element {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
-  const handleOpenModal = (task: Task): void => {
-    setModalAlert('');
-    setModal({
-      isOpen: true,
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      completed: task.completed,
-    });
-  };
-
-  const handleCloseModal = (): void => {
-    setModalAlert('');
-    setModal(initialModal);
-  };
-
-  const handleSaveModal = (): void => {
-    if (!modal.title.trim() || !modal.description.trim()) {
-      setModalAlert('Title and description are required');
-      return;
-    }
-
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === modal.id
-          ? {
-            ...task,
-            title: modal.title.trim(),
-            description: modal.description.trim(),
-            completed: modal.completed,
-          }
-          : task,
-      ),
-    );
-
-    handleCloseModal();
+  const handleEdit = (task: Task): void => {
+    setMainAlert('');
+    setEditingId(task.id);
+    setTitle(task.title);
+    setDescription(task.description);
   };
 
   return (
@@ -161,24 +137,17 @@ export default function App(): JSX.Element {
           description={description}
           onTitleChange={setTitle}
           onDescriptionChange={setDescription}
-          onSubmit={handleAdd}
+          onSubmit={handleSubmit}
+          submitLabel={editingId ? 'Save' : 'Add'}
         />
 
         <TodoTable
           tasks={filteredTasks}
           onToggleComplete={handleToggleComplete}
-          onEdit={handleOpenModal}
+          onEdit={handleEdit}
           onDelete={handleDelete}
         />
       </main>
-
-      <EditTodoModal
-        modal={modal}
-        modalAlert={modalAlert}
-        onClose={handleCloseModal}
-        onSave={handleSaveModal}
-        onChange={setModal}
-      />
     </div>
   );
 }
