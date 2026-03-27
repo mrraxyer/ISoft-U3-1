@@ -16,6 +16,7 @@ const initialModal: ModalState = {
 
 export default function App(): JSX.Element {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [filterType, setFilterType] = useState<FilterType>('all');
@@ -35,6 +36,7 @@ export default function App(): JSX.Element {
           completed: false,
         },
       ]);
+      setIsHydrated(true);
       return;
     }
 
@@ -42,12 +44,18 @@ export default function App(): JSX.Element {
       setTasks(JSON.parse(savedTasks));
     } catch {
       setTasks([]);
+    } finally {
+      setIsHydrated(true);
     }
   }, []);
 
   useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
     localStorage.setItem('todo_tasks', JSON.stringify(tasks));
-  }, [tasks]);
+  }, [tasks, isHydrated]);
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
