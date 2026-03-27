@@ -19,8 +19,9 @@ export default function TodoForm({
         <form onSubmit={onSubmit}>
             <div className="grid grid-cols-1 gap-3 rounded-lg border border-zinc-700 bg-zinc-950 p-4 sm:grid-cols-12 sm:items-end">
                 <div className="sm:col-span-3">
-                    <label className="mb-1 block text-sm font-medium">Title</label>
+                    <label htmlFor="todo-title" className="mb-1 block text-sm font-medium">Title</label>
                     <input
+                        id="todo-title"
                         type="text"
                         value={title}
                         onChange={(e) => onTitleChange(e.target.value)}
@@ -30,8 +31,9 @@ export default function TodoForm({
                 </div>
 
                 <div className="sm:col-span-7">
-                    <label className="mb-1 block text-sm font-medium">Description</label>
+                    <label htmlFor="todo-description" className="mb-1 block text-sm font-medium">Description</label>
                     <input
+                        id="todo-description"
                         type="text"
                         value={description}
                         onChange={(e) => onDescriptionChange(e.target.value)}
