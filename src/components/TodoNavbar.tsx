@@ -6,6 +6,7 @@ type TodoNavbarProps = {
     words: string;
     onFilterTypeChange: (value: FilterType) => void;
     onWordsChange: (value: string) => void;
+    onSearch: () => void;
 };
 
 export default function TodoNavbar({
@@ -13,6 +14,7 @@ export default function TodoNavbar({
     words,
     onFilterTypeChange,
     onWordsChange,
+    onSearch,
 }: TodoNavbarProps): JSX.Element {
     return (
         <nav className="sticky top-0 z-40 border-b border-zinc-700 bg-zinc-950/80 px-4 py-3 backdrop-blur sm:px-6">
@@ -22,7 +24,13 @@ export default function TodoNavbar({
                     <span className="text-sm text-zinc-400">Home</span>
                 </div>
 
-                <form className="flex flex-wrap items-center gap-2 lg:justify-end" onSubmit={(e) => e.preventDefault()}>
+                <form
+                    className="flex flex-wrap items-center gap-2 lg:justify-end"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        onSearch();
+                    }}
+                >
                     <span className="mr-1 text-sm font-semibold text-cyan-400">Filters</span>
 
                     <label className="flex items-center gap-1 text-sm">
